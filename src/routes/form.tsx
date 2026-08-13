@@ -4,7 +4,7 @@ import { useServerFn } from "@tanstack/react-start";
 import { Toaster, toast } from "sonner";
 import { supabase } from "@/integrations/supabase/client";
 import { SiteHeader } from "@/components/SiteHeader";
-import { isTenmsAuthConfigured, loginWithTenms, useTenmsUser } from "@/lib/tenms-auth";
+import { auth, useAuth } from "@/lib/auth";
 import { compressImage } from "@/lib/image-compress";
 import { getResultCardUploadUrl } from "@/lib/r2-upload.functions";
 import { submitResultFn } from "@/lib/d1.functions";
@@ -63,7 +63,7 @@ const fieldClass =
 
 function FormPage() {
   const navigate = useNavigate();
-  const { user, ready } = useTenmsUser();
+  const { user, ready } = useAuth();
   const [existing, setExisting] = useState<{
     certificate_name: string;
     school_name: string;
@@ -243,7 +243,7 @@ function FormPage() {
 
       <SiteHeader />
 
-      {ready && isTenmsAuthConfigured() && !user ? (
+      {ready && !user ? (
         <LoginGate />
       ) : checking ? (
         <section className="mx-auto max-w-md px-6 py-20 text-center">
@@ -500,9 +500,11 @@ function AlreadyGenerated({
 }
 
 function LoginGate() {
+  const navigate = useNavigate();
   async function handleLogin() {
     try {
-      await loginWithTenms();
+      await auth.loginWithPopup();
+      navigate({ to: "/dashboard" });
     } catch (err) {
       toast.error(err instanceof Error ? err.message : "লগইন সম্পন্ন হয়নি।");
     }

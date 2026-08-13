@@ -1,5 +1,6 @@
 import { createFileRoute } from "@tanstack/react-router";
-import { useEffect, useState } from "react";
+import { useEffect } from "react";
+import { auth } from "@/lib/auth";
 
 export const Route = createFileRoute("/auth/callback")({
   ssr: false,
@@ -19,35 +20,23 @@ export const Route = createFileRoute("/auth/callback")({
 });
 
 function AuthCallback() {
-  const [message, setMessage] = useState("লগইন সম্পন্ন হচ্ছে...");
+  // The @tenminuteschool/auth-react SDK's loginWithPopup will monitor this window's URL
+  // and close it automatically when the OAuth redirect completes.
+  // We can also call handleRedirectCallback in case it's a redirect flow.
 
   useEffect(() => {
-    const params = new URLSearchParams(window.location.search);
-    const error = params.get("error");
-
-    // TODO(10MS SDK): if the provider returns a `code`, exchange it for the
-    // user profile here (or in a server function) before posting the message.
-    const user = error
-      ? null
-      : {
-          id: params.get("user_id") ?? params.get("sub") ?? params.get("code") ?? "",
-          name: params.get("name") ?? undefined,
-          phone: params.get("phone") ?? undefined,
-          email: params.get("email") ?? undefined,
-        };
-
-    window.opener?.postMessage(
-      { type: "tenms-auth", user: user?.id ? user : null, error },
-      window.location.origin,
-    );
-
-    if (window.opener) window.close();
-    else setMessage(error ? "লগইন সম্পন্ন হয়নি।" : "লগইন সম্পন্ন হয়েছে, এই উইন্ডোটি বন্ধ করো।");
+    try {
+      auth.handleRedirectCallback();
+      // If we got here in a redirect flow, we should probably redirect to /dashboard
+      // But loginWithPopup is the primary flow used in this app.
+    } catch (err) {
+      // Ignore errors; loginWithPopup flow doesn't have sessionStorage state here.
+    }
   }, []);
 
   return (
     <main className="flex min-h-screen items-center justify-center bg-background px-6">
-      <p className="bn text-sm text-text-2">{message}</p>
+      <p className="bn text-sm text-text-2">লগইন সম্পন্ন হচ্ছে...</p>
     </main>
   );
 }

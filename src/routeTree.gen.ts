@@ -11,6 +11,7 @@
 import { Route as rootRouteImport } from './routes/__root'
 import { Route as IndexRouteImport } from './routes/index'
 import { Route as CertificateRouteImport } from './routes/certificate'
+import { Route as DashboardRouteImport } from './routes/dashboard'
 import { Route as FormRouteImport } from './routes/form'
 import { Route as GalleryRouteImport } from './routes/gallery'
 import { Route as ApiUploadResultCardRouteImport } from './routes/api/upload-result-card'
@@ -24,6 +25,11 @@ const IndexRoute = IndexRouteImport.update({
 const CertificateRoute = CertificateRouteImport.update({
   id: '/certificate',
   path: '/certificate',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const DashboardRoute = DashboardRouteImport.update({
+  id: '/dashboard',
+  path: '/dashboard',
   getParentRoute: () => rootRouteImport,
 } as any)
 const FormRoute = FormRouteImport.update({
@@ -50,6 +56,7 @@ const AuthCallbackRoute = AuthCallbackRouteImport.update({
 export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
   '/certificate': typeof CertificateRoute
+  '/dashboard': typeof DashboardRoute
   '/form': typeof FormRoute
   '/gallery': typeof GalleryRoute
   '/api/upload-result-card': typeof ApiUploadResultCardRoute
@@ -58,6 +65,7 @@ export interface FileRoutesByFullPath {
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
   '/certificate': typeof CertificateRoute
+  '/dashboard': typeof DashboardRoute
   '/form': typeof FormRoute
   '/gallery': typeof GalleryRoute
   '/api/upload-result-card': typeof ApiUploadResultCardRoute
@@ -67,6 +75,7 @@ export interface FileRoutesById {
   __root__: typeof rootRouteImport
   '/': typeof IndexRoute
   '/certificate': typeof CertificateRoute
+  '/dashboard': typeof DashboardRoute
   '/form': typeof FormRoute
   '/gallery': typeof GalleryRoute
   '/api/upload-result-card': typeof ApiUploadResultCardRoute
@@ -77,6 +86,7 @@ export interface FileRouteTypes {
   fullPaths:
     | '/'
     | '/certificate'
+    | '/dashboard'
     | '/form'
     | '/gallery'
     | '/api/upload-result-card'
@@ -85,6 +95,7 @@ export interface FileRouteTypes {
   to:
     | '/'
     | '/certificate'
+    | '/dashboard'
     | '/form'
     | '/gallery'
     | '/api/upload-result-card'
@@ -93,6 +104,7 @@ export interface FileRouteTypes {
     | '__root__'
     | '/'
     | '/certificate'
+    | '/dashboard'
     | '/form'
     | '/gallery'
     | '/api/upload-result-card'
@@ -102,6 +114,7 @@ export interface FileRouteTypes {
 export interface RootRouteChildren {
   IndexRoute: typeof IndexRoute
   CertificateRoute: typeof CertificateRoute
+  DashboardRoute: typeof DashboardRoute
   FormRoute: typeof FormRoute
   GalleryRoute: typeof GalleryRoute
   ApiUploadResultCardRoute: typeof ApiUploadResultCardRoute
@@ -122,6 +135,13 @@ declare module '@tanstack/react-router' {
       path: '/certificate'
       fullPath: '/certificate'
       preLoaderRoute: typeof CertificateRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/dashboard': {
+      id: '/dashboard'
+      path: '/dashboard'
+      fullPath: '/dashboard'
+      preLoaderRoute: typeof DashboardRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/form': {
@@ -158,6 +178,7 @@ declare module '@tanstack/react-router' {
 const rootRouteChildren: RootRouteChildren = {
   IndexRoute: IndexRoute,
   CertificateRoute: CertificateRoute,
+  DashboardRoute: DashboardRoute,
   FormRoute: FormRoute,
   GalleryRoute: GalleryRoute,
   ApiUploadResultCardRoute: ApiUploadResultCardRoute,

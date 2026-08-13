@@ -22,7 +22,8 @@ import {
 import { SiteHeader } from "@/components/SiteHeader";
 import { Certificate } from "@/components/Certificate";
 import { Logo } from "@/components/Logo";
-import { isTenmsAuthConfigured, loginWithTenms, useTenmsUser } from "@/lib/tenms-auth";
+import { auth, useAuth } from "@/lib/auth";
+import { useEffect } from "react";
 import { useNavigate } from "@tanstack/react-router";
 import { Toaster, toast } from "sonner";
 import trophy from "@/assets/trophy-books.png";
@@ -123,16 +124,16 @@ const BENEFITS = [
 
 function LoginButton({ className = "" }: { className?: string }) {
   const navigate = useNavigate();
-  const { user } = useTenmsUser();
+  const { user } = useAuth();
 
   async function handleLogin() {
-    if (user || !isTenmsAuthConfigured()) {
-      navigate({ to: "/form" });
+    if (user) {
+      navigate({ to: "/dashboard" });
       return;
     }
     try {
-      await loginWithTenms();
-      navigate({ to: "/form" });
+      await auth.loginWithPopup();
+      navigate({ to: "/dashboard" });
     } catch (err) {
       toast.error(err instanceof Error ? err.message : "লগইন সম্পন্ন হয়নি।");
     }
@@ -162,6 +163,16 @@ function SecureNote() {
 }
 
 function Home() {
+  const navigate = useNavigate();
+  const { user, ready } = useAuth();
+
+  // Redirect already logged-in users to /dashboard
+  useEffect(() => {
+    if (ready && user) {
+      navigate({ to: "/dashboard" });
+    }
+  }, [ready, user, navigate]);
+
   return (
     <main className="min-h-screen bg-background">
       <Toaster position="top-center" richColors />
