@@ -1,4 +1,4 @@
-# 10ms-ks2026 — Result Certificate Generator
+# 10 Minute School — Kriti Shikkharthi 2026
 
 Students submit their exam results and get a personalized certificate. All submissions are saved and shown in a public gallery.
 
