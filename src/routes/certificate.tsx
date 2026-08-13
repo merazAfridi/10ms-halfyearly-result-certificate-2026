@@ -2,7 +2,7 @@ import { createFileRoute, Link, useNavigate } from "@tanstack/react-router";
 import { useEffect, useMemo, useRef, useState } from "react";
 import { ArrowLeft, ChevronLeft, ChevronRight, Images, Award } from "lucide-react";
 import { toPng } from "html-to-image";
-import { supabase } from "@/integrations/supabase/client";
+import { fetchSubmissionsFn } from "@/lib/d1.functions";
 import { Certificate } from "@/components/Certificate";
 import { SiteHeader } from "@/components/SiteHeader";
 
@@ -79,15 +79,12 @@ function CertificatePage() {
   useEffect(() => {
     if (!search.view) return;
     setViewLoading(true);
-    supabase
-      .from("result_submissions")
-      .select(
-        "id,certificate_name,school_name,exam_name,class_name,class_position,total_marks,created_at",
-      )
-      .order("created_at", { ascending: false })
-      .limit(300)
-      .then(({ data }) => {
+    fetchSubmissionsFn({ data: { limit: 300 } })
+      .then((data) => {
         setViewRows((data as GalleryRow[]) ?? []);
+        setViewLoading(false);
+      })
+      .catch(() => {
         setViewLoading(false);
       });
   }, [search.view]);
@@ -131,7 +128,7 @@ function CertificatePage() {
     try {
       const dataUrl = await toPng(certRef.current, { pixelRatio: 3, cacheBust: true });
       const { jsPDF } = await import("jspdf");
-      const pdf = new jsPDF({ orientation: "portrait", unit: "pt", format: "a4" });
+      const pdf = new jsPDF({ orientation: "landscape", unit: "pt", format: "a4" });
       const w = pdf.internal.pageSize.getWidth();
       const h = pdf.internal.pageSize.getHeight();
       pdf.addImage(dataUrl, "PNG", 0, 0, w, h);
@@ -180,7 +177,18 @@ function CertificatePage() {
     <main className="min-h-screen bg-background">
       <SiteHeader />
 
-      <section className="mx-auto max-w-xl px-6 py-10">
+      <section className="mx-auto max-w-xl px-6 py-10 relative">
+        {search.view ? (
+          <div className="mb-6">
+            <Link
+              to="/gallery"
+              className="inline-flex items-center gap-1.5 text-sm font-semibold text-text-secondary transition hover:text-primary"
+            >
+              <ArrowLeft className="h-4 w-4" />
+              Back to Gallery
+            </Link>
+          </div>
+        ) : null}
         <h1 className="bn mb-6 text-center text-2xl font-semibold">
           {search.view ? "তোমার বন্ধুদের সার্টিফিকেট" : "তোমার সার্টিফিকেট"}
         </h1>

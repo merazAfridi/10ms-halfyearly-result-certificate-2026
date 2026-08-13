@@ -1,8 +1,9 @@
 import { createFileRoute, Link } from "@tanstack/react-router";
 import { useEffect, useMemo, useState } from "react";
-import { supabase } from "@/integrations/supabase/client";
+import { fetchSubmissionsFn } from "@/lib/d1.functions";
 import { SiteHeader } from "@/components/SiteHeader";
 import { Certificate } from "@/components/Certificate";
+import { Award, Trophy, Medal, Search, Users, Sparkles, Filter } from "lucide-react";
 
 export const Route = createFileRoute("/gallery")({
   head: () => ({
@@ -97,16 +98,11 @@ function GalleryPage() {
   const [loading, setLoading] = useState(true);
   const [cls, setCls] = useState("All");
   const [q, setQ] = useState("");
+  const [visibleCount, setVisibleCount] = useState(24);
 
   useEffect(() => {
-    supabase
-      .from("result_submissions")
-      .select(
-        "id,certificate_name,school_name,exam_name,class_name,class_position,total_marks,created_at",
-      )
-      .order("created_at", { ascending: false })
-      .limit(300)
-      .then(({ data }) => {
+    fetchSubmissionsFn({ data: { limit: 300 } })
+      .then((data) => {
         if (data && data.length > 0) {
           setRows(data as Row[]);
         } else {
@@ -119,6 +115,14 @@ function GalleryPage() {
         setLoading(false);
       });
   }, []);
+
+  const stats = useMemo(() => {
+    const total = rows.length;
+    const firstCount = rows.filter((r) => r.class_position === 1).length;
+    const secondCount = rows.filter((r) => r.class_position === 2).length;
+    const thirdCount = rows.filter((r) => r.class_position === 3).length;
+    return { total, firstCount, secondCount, thirdCount };
+  }, [rows]);
 
   const filtered = useMemo(() => {
     const term = q.trim().toLowerCase();
@@ -138,86 +142,166 @@ function GalleryPage() {
 
       <section className="border-b border-border bg-surface-tinted">
         <div className="mx-auto max-w-5xl px-6 py-12 text-center">
-          <h1 className="text-3xl leading-tight font-bold tracking-tight sm:text-4xl">
+          <div className="inline-flex items-center gap-2 rounded-full border border-primary/20 bg-primary-container/40 px-3.5 py-1 text-xs font-semibold text-green-link">
+            <Sparkles className="h-3.5 w-3.5 text-primary" />
+            <span>10MS Certificate Showcase</span>
+          </div>
+          <h1 className="mt-3 text-3xl font-extrabold tracking-tight text-text-primary sm:text-4xl">
             Certificate Gallery
           </h1>
-          <p className="bn mx-auto mt-3 max-w-2xl text-[0.9375rem] text-text-2">
-            সব শিক্ষার্থীর তৈরি করা সার্টিফিকেট এক জায়গায়। শ্রেণি অনুযায়ী ফিল্টার করো, বা নাম /
-            স্কুলের নাম দিয়ে খুঁজে দেখো।
+          <p className="bn mx-auto mt-2.5 max-w-2xl text-[0.9375rem] text-text-secondary">
+            সব শিক্ষার্থীর অর্জন ও ডিজিটাল সার্টিফিকেট এক জায়গায়। শ্রেণি অনুযায়ী ফিল্টার করো, বা নাম / স্কুলের নাম দিয়ে খুঁজে দেখো।
           </p>
+
+          {/* Summary Section */}
+          <div className="mt-8 grid grid-cols-2 gap-3 sm:gap-4 md:grid-cols-4">
+            {/* Total Submissions */}
+            <div className="flex items-center gap-3.5 rounded-2xl border border-border bg-surface p-4 shadow-sm transition hover:border-primary/40 hover:shadow-md">
+              <div className="flex h-11 w-11 shrink-0 items-center justify-center rounded-xl bg-emerald-50 text-primary dark:bg-emerald-950/40">
+                <Users className="h-6 w-6 text-primary" />
+              </div>
+              <div className="text-left">
+                <p className="text-xs font-medium text-text-tertiary bn">মোট সার্টিফিকেট</p>
+                <p className="text-xl font-bold text-text-primary">{stats.total}</p>
+              </div>
+            </div>
+
+            {/* 1st Place */}
+            <div className="flex items-center gap-3.5 rounded-2xl border border-amber-200/80 bg-amber-50/40 p-4 shadow-sm transition hover:border-amber-400 hover:shadow-md dark:border-amber-900/50 dark:bg-amber-950/20">
+              <div className="flex h-11 w-11 shrink-0 items-center justify-center rounded-xl bg-amber-100 text-amber-600 dark:bg-amber-900/50 dark:text-amber-400">
+                <Trophy className="h-6 w-6 text-amber-500" />
+              </div>
+              <div className="text-left">
+                <p className="text-xs font-semibold text-amber-700 dark:text-amber-400 bn">১ম স্থান অর্জনকারী</p>
+                <p className="text-xl font-bold text-amber-900 dark:text-amber-200">{stats.firstCount}</p>
+              </div>
+            </div>
+
+            {/* 2nd Place */}
+            <div className="flex items-center gap-3.5 rounded-2xl border border-slate-200/90 bg-slate-50/50 p-4 shadow-sm transition hover:border-slate-400 hover:shadow-md dark:border-slate-800 dark:bg-slate-900/30">
+              <div className="flex h-11 w-11 shrink-0 items-center justify-center rounded-xl bg-slate-200/80 text-slate-700 dark:bg-slate-800 dark:text-slate-300">
+                <Medal className="h-6 w-6 text-slate-600 dark:text-slate-300" />
+              </div>
+              <div className="text-left">
+                <p className="text-xs font-semibold text-slate-600 dark:text-slate-400 bn">২য় স্থান অর্জনকারী</p>
+                <p className="text-xl font-bold text-slate-800 dark:text-slate-200">{stats.secondCount}</p>
+              </div>
+            </div>
+
+            {/* 3rd Place */}
+            <div className="flex items-center gap-3.5 rounded-2xl border border-orange-200/80 bg-orange-50/40 p-4 shadow-sm transition hover:border-orange-400 hover:shadow-md dark:border-orange-950/40 dark:bg-orange-950/20">
+              <div className="flex h-11 w-11 shrink-0 items-center justify-center rounded-xl bg-orange-100 text-orange-700 dark:bg-orange-900/40 dark:text-orange-300">
+                <Award className="h-6 w-6 text-amber-700" />
+              </div>
+              <div className="text-left">
+                <p className="text-xs font-semibold text-orange-800 dark:text-orange-400 bn">৩য় স্থান অর্জনকারী</p>
+                <p className="text-xl font-bold text-orange-950 dark:text-orange-200">{stats.thirdCount}</p>
+              </div>
+            </div>
+          </div>
         </div>
       </section>
 
       <section className="mx-auto max-w-7xl px-6 py-8">
         <div className="flex flex-col gap-4 sm:flex-row sm:items-center">
-          <div className="flex flex-wrap gap-2">
+          <div className="flex flex-wrap items-center gap-2">
+            <span className="mr-1 inline-flex items-center text-xs font-semibold text-text-tertiary">
+              <Filter className="mr-1 h-3.5 w-3.5 text-primary" /> Filter:
+            </span>
             {CLASS_FILTERS.map((c) => (
               <button
                 key={c}
                 onClick={() => setCls(c)}
-                className={`rounded-full border px-4 py-2 text-sm font-medium transition ${
+                className={`rounded-full border px-4 py-2 text-sm font-semibold transition ${
                   cls === c
-                    ? "border-primary bg-primary-container text-on-primary-container"
-                    : "border-border bg-card text-text-2 hover:border-primary"
+                    ? "border-primary bg-primary text-on-primary shadow-sm"
+                    : "border-border bg-card text-text-secondary hover:border-primary/50 hover:bg-surface-tinted"
                 }`}
               >
                 {c}
               </button>
             ))}
           </div>
-          <input
-            value={q}
-            onChange={(e) => setQ(e.target.value)}
-            placeholder="Search by student or school name"
-            className="w-full rounded-xl border border-border bg-card px-4 py-3 text-[0.9375rem] outline-none transition placeholder:text-muted-foreground focus:border-primary focus:ring-2 focus:ring-primary/20 sm:ml-auto sm:max-w-xs"
-          />
+
+          <div className="relative w-full sm:ml-auto sm:max-w-xs">
+            <Search className="absolute left-3.5 top-3.5 h-4 w-4 text-primary" />
+            <input
+              value={q}
+              onChange={(e) => setQ(e.target.value)}
+              placeholder="Search by student or school name"
+              className="w-full rounded-xl border border-border bg-card pl-10 pr-4 py-2.5 text-[0.9375rem] outline-none transition placeholder:text-text-tertiary focus:border-primary focus:ring-2 focus:ring-primary/20"
+            />
+          </div>
         </div>
 
         {loading ? (
-          <p className="bn py-16 text-center text-text-3">লোড হচ্ছে...</p>
-        ) : filtered.length === 0 ? (
-          <p className="bn py-16 text-center text-text-3">কোনো সার্টিফিকেট পাওয়া যায়নি।</p>
-        ) : (
-          <div className="mt-8 grid gap-5 grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 xl:grid-cols-6">
-            {filtered.map((r) => (
-              <Link
-                key={r.id}
-                to="/certificate"
-                search={{
-                  name: r.certificate_name,
-                  school: r.school_name,
-                  exam: r.exam_name,
-                  position: r.class_position,
-                  marks: String(r.total_marks),
-                  cls: r.class_name ?? undefined,
-                  view: 1,
-                  fcls: cls,
-                  fq: q,
-                }}
-                className="group overflow-hidden rounded-2xl border border-border bg-card transition hover:border-primary"
-              >
-                <div className="overflow-hidden border-b border-border">
-                  <Certificate
-                    data={{
-                      studentName: r.certificate_name,
-                      schoolName: r.school_name,
-                      examName: r.exam_name,
-                      position: r.class_position,
-                      totalMarks: String(r.total_marks),
-                      className: r.class_name ?? undefined,
-                    }}
-                  />
-                </div>
-                <div className="p-3">
-                  <p className="truncate text-sm font-semibold">{r.certificate_name}</p>
-                  <p className="mt-0.5 truncate text-xs text-text-3">{r.school_name}</p>
-                  <p className="mt-1.5 truncate text-[11px] font-medium text-green-link">
-                    {r.class_name ?? "—"} · {r.exam_name} · Position {r.class_position}
-                  </p>
-                </div>
-              </Link>
-            ))}
+          <div className="flex flex-col items-center justify-center py-20">
+            <div className="h-8 w-8 animate-spin rounded-full border-4 border-primary border-t-transparent"></div>
+            <p className="bn mt-3 text-sm text-text-tertiary">সার্টিফিকেট গ্যালা‌রি লোড হচ্ছে...</p>
           </div>
+        ) : filtered.length === 0 ? (
+          <div className="py-20 text-center">
+            <Award className="mx-auto h-12 w-12 text-icon-inactive" />
+            <p className="bn mt-3 text-base font-medium text-text-secondary">কোনো সার্টিফিকেট পাওয়া যায়নি।</p>
+          </div>
+        ) : (
+          <>
+            <div className="mt-8 grid gap-5 grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 xl:grid-cols-6">
+              {filtered.slice(0, visibleCount).map((r) => (
+                <Link
+                  key={r.id}
+                  to="/certificate"
+                  search={{
+                    name: r.certificate_name,
+                    school: r.school_name,
+                    exam: r.exam_name,
+                    position: r.class_position,
+                    marks: String(r.total_marks),
+                    cls: r.class_name ?? undefined,
+                    view: 1,
+                    fcls: cls,
+                    fq: q,
+                  }}
+                  className="group flex flex-col overflow-hidden rounded-2xl border border-border bg-card transition-all duration-200 hover:-translate-y-1 hover:border-primary hover:shadow-lg"
+                >
+                  <div className="overflow-hidden border-b border-border bg-slate-50">
+                    <Certificate
+                      data={{
+                        studentName: r.certificate_name,
+                        schoolName: r.school_name,
+                        examName: r.exam_name,
+                        position: r.class_position,
+                        totalMarks: String(r.total_marks),
+                        className: r.class_name ?? undefined,
+                      }}
+                    />
+                  </div>
+                  <div className="p-3 flex flex-col flex-1">
+                    <p className="truncate text-sm font-bold text-text-primary group-hover:text-primary transition-colors">
+                      {r.certificate_name}
+                    </p>
+                    <p className="mt-0.5 truncate text-xs text-text-tertiary">{r.school_name}</p>
+                    <div className="mt-auto pt-2 flex items-center justify-between text-[11px] font-medium text-green-link border-t border-border/50">
+                      <span className="truncate">{r.class_name ?? "—"}</span>
+                      <span className="shrink-0 rounded-md bg-emerald-50 px-1.5 py-0.5 font-bold text-primary dark:bg-emerald-950/50">
+                        Pos {r.class_position}
+                      </span>
+                    </div>
+                  </div>
+                </Link>
+              ))}
+            </div>
+            {visibleCount < filtered.length && (
+              <div className="mt-10 flex justify-center">
+                <button
+                  onClick={() => setVisibleCount((v) => v + 24)}
+                  className="rounded-full border border-primary/20 bg-primary-container px-6 py-3 text-sm font-semibold text-primary transition hover:bg-primary/20"
+                >
+                  আরো দেখুন
+                </button>
+              </div>
+            )}
+          </>
         )}
       </section>
     </main>

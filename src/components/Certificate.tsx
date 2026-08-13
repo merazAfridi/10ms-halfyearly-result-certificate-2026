@@ -1,9 +1,9 @@
 import { forwardRef } from "react";
 
-import bgFirst from "@/assets/certificates/cert-first.jpg";
-import bgSecond from "@/assets/certificates/cert-second.jpg";
-import bgThird from "@/assets/certificates/cert-third.jpg";
-import bgOther from "@/assets/certificates/cert-other.jpg";
+import bgFirst from "@/assets/certificates/bg-first.svg";
+import bgSecond from "@/assets/certificates/bg-second.svg";
+import bgThird from "@/assets/certificates/bg-third.svg";
+import bgOther from "@/assets/certificates/bg-other.svg";
 
 export type CertificateData = {
   studentName: string;
@@ -14,6 +14,15 @@ export type CertificateData = {
   className?: string;
 };
 
+function ordinalSuffix(i: number) {
+  const j = i % 10,
+    k = i % 100;
+  if (j == 1 && k != 11) return i + "st";
+  if (j == 2 && k != 12) return i + "nd";
+  if (j == 3 && k != 13) return i + "rd";
+  return i + "th";
+}
+
 export function tierOf(position: number) {
   if (position === 1) return "first" as const;
   if (position === 2) return "second" as const;
@@ -21,68 +30,30 @@ export function tierOf(position: number) {
   return "other" as const;
 }
 
-/**
- * Geometry is transcribed 1:1 from the official 10MS certificate deck.
- * Slide: 7562850 x 10688625 EMU (595.5pt x 841.6pt).
- * Percentages below are EMU offsets divided by the slide dimensions,
- * font sizes are pt converted to cqw (pt / 595.5 * 100).
- */
 const TIERS = {
-  first: {
-    bg: bgFirst,
-    medal: "",
-    label: "1st Position",
-    presentedY: 44.99,
-    nameY: 49.95,
-    bodyY: 55.14,
-  },
-  second: {
-    bg: bgSecond,
-    medal: "",
-    label: "2nd Position",
-    presentedY: 45.46,
-    nameY: 50.79,
-    bodyY: 56.36,
-  },
-  third: {
-    bg: bgThird,
-    medal: "",
-    label: "3rd Position",
-    presentedY: 44.99,
-    nameY: 50.79,
-    bodyY: 56.36,
-  },
-  other: { bg: bgOther, medal: "", label: "", presentedY: 45.46, nameY: 49.8, bodyY: 54.99 },
+  first: { bg: bgFirst },
+  second: { bg: bgSecond },
+  third: { bg: bgThird },
+  other: { bg: bgOther },
 } as const;
-
-const PT = (pt: number) => `${(pt / 595.5) * 100}cqw`;
 
 export const Certificate = forwardRef<HTMLDivElement, { data: CertificateData }>(
   function Certificate({ data }, ref) {
-    const tier = TIERS[tierOf(data.position)];
-    const exam = <b>{data.examName}</b>;
-    const cls = data.className ? (
-      <>
-        of <b>{data.className}</b>{" "}
-      </>
-    ) : null;
-    const school = (
-      <>
-        at <b>{data.schoolName || "School Name"}.</b>
-      </>
-    );
+    const tierKey = tierOf(data.position);
+    const tier = TIERS[tierKey];
 
     return (
       <div
         ref={ref}
-        className="relative w-full overflow-hidden bg-white"
+        className="relative w-full overflow-hidden bg-white select-none shadow-sm"
         style={{
-          aspectRatio: "7562850 / 10688625",
+          aspectRatio: "1121 / 793",
           containerType: "inline-size",
-          fontFamily: '"Poppins", Arial, sans-serif',
-          color: "#000",
+          fontFamily: '"Inter", "Anek Bangla", sans-serif',
+          color: "#0F172A",
         }}
       >
+        {/* The Exact SVG Background (without placeholder text) */}
         <img
           src={tier.bg}
           alt=""
@@ -90,45 +61,47 @@ export const Certificate = forwardRef<HTMLDivElement, { data: CertificateData }>
           className="absolute inset-0 h-full w-full object-cover"
         />
 
-        <div
-          className="absolute text-center"
-          style={{ left: "24.61%", top: `${tier.presentedY}%`, width: "50.78%", fontSize: PT(14) }}
-        >
-          This certificate is proudly presented to
-        </div>
 
+        {/* Content Area — dynamic student data only */}
         <div
-          className="absolute text-center font-bold"
-          style={{ left: "9.58%", top: `${tier.nameY}%`, width: "80.84%", fontSize: PT(24) }}
+          className="absolute z-10 flex flex-col items-center justify-start text-center"
+          style={{ left: "28%", right: "3%", top: "37.5%", bottom: "16%" }}
         >
-          {data.studentName || "Student Name"}
-        </div>
+          {/* Presented To */}
+          <p
+            className="font-normal"
+            style={{ fontSize: "1.9cqw", color: "#000000", marginBottom: "0.5cqw" }}
+          >
+            This certificate is proudly presented to
+          </p>
 
-        <div
-          className="absolute text-center"
-          style={{
-            left: "21.54%",
-            top: `${tier.bodyY}%`,
-            width: "56.93%",
-            fontSize: PT(14),
-            lineHeight: 1.35,
-          }}
-        >
-          {tier.label ? (
-            <p>
-              For achieving{tier.medal} <b>{tier.label} </b>in the {exam} {cls}
-              {school}
-            </p>
-          ) : (
-            <p>
-              For achieving excellent results in the {exam} {cls}
-              {school}
-            </p>
-          )}
-          <p>&nbsp;</p>
-          <p>Congratulations on this remarkable achievement!</p>
+          {/* Name */}
+          <h2
+            className="font-black"
+            style={{ fontSize: "4.2cqw", color: "#000000", marginBottom: "1cqw" }}
+          >
+            {data.studentName || "Student Name"}
+          </h2>
+
+          {/* Body */}
+          <p
+            className="font-normal leading-relaxed"
+            style={{ fontSize: "1.8cqw", color: "#000000", maxWidth: "68%" }}
+          >
+            For achieving <b>{ordinalSuffix(data.position)} Position</b> in the{" "}
+            <b>{data.examName.replace(/Examination/gi, "Exam")}</b> of{" "}
+            <b>{data.className}</b> at <b>{data.schoolName}</b>.
+          </p>
+
+          <p
+            className="font-normal"
+            style={{ fontSize: "1.8cqw", color: "#000000", marginTop: "3cqw" }}
+          >
+            Congratulations on this remarkable<br />
+            achievement!
+          </p>
         </div>
       </div>
     );
-  },
+  }
 );

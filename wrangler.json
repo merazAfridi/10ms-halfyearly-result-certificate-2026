@@ -1,0 +1,13 @@
+{
+  "$schema": "node_modules/wrangler/config-schema.json",
+  "name": "10ms-kriti-shikharti-certificate",
+  "compatibility_date": "2026-08-01",
+  "pages_build_output_dir": ".output/public",
+  "d1_databases": [
+    {
+      "binding": "DB",
+      "database_name": "certificate_db",
+      "database_id": "61d0c807-e08d-4628-a602-a317c08ec59e"
+    }
+  ]
+}

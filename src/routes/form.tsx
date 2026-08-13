@@ -7,6 +7,7 @@ import { SiteHeader } from "@/components/SiteHeader";
 import { isTenmsAuthConfigured, loginWithTenms, useTenmsUser } from "@/lib/tenms-auth";
 import { compressImage } from "@/lib/image-compress";
 import { getResultCardUploadUrl } from "@/lib/r2-upload.functions";
+import { submitResultFn } from "@/lib/d1.functions";
 import { Logo } from "@/components/Logo";
 
 export const Route = createFileRoute("/form")({
@@ -181,22 +182,24 @@ function FormPage() {
 
     setUploading(false);
     try {
-      await supabase.from("result_submissions").insert({
-        certificate_name: name.trim(),
-        class_name: studentClass,
-        school_name: school.trim(),
-        preparation_type: prep,
-        exam_name: exam,
-        total_marks: Number(marks),
-        exam_total_marks: Number(totalExamMarks),
-        class_position: Number(position),
-        result_card_url: path,
-        student_phone: user?.phone ?? null,
-        student_email: user?.email ?? null,
-        external_user_id: user?.id ?? null,
+      await submitResultFn({
+        data: {
+          certificate_name: name.trim(),
+          class_name: studentClass,
+          school_name: school.trim(),
+          preparation_type: prep,
+          exam_name: exam,
+          total_marks: Number(marks),
+          exam_total_marks: Number(totalExamMarks),
+          class_position: Number(position),
+          result_card_url: path,
+          student_phone: user?.phone ?? null,
+          student_email: user?.email ?? null,
+          external_user_id: user?.id ?? null,
+        },
       });
     } catch (err) {
-      console.warn("Supabase insert warning:", err);
+      console.warn("Cloudflare D1 insert warning:", err);
     }
 
     toast.success("অভিনন্দন! তোমার সার্টিফিকেট তৈরি হয়েছে।");
@@ -247,13 +250,19 @@ function FormPage() {
               className="space-y-6 rounded-2xl border border-border bg-card p-4 sm:p-6"
             >
               <Field label="১. সার্টিফিকেট নাম (ইংরেজি)">
-                <input
-                  className={fieldClass}
-                  value={name}
-                  placeholder="Your name in English"
-                  onChange={(e) => onlyEnglish(e.target.value) && setName(e.target.value)}
-                  required
-                />
+                <div className="relative">
+                  <input
+                    className={fieldClass}
+                    value={name}
+                    maxLength={40}
+                    placeholder="Your name in English (Max 40 characters)"
+                    onChange={(e) => onlyEnglish(e.target.value) && setName(e.target.value)}
+                    required
+                  />
+                  <span className="absolute right-3 top-3.5 text-xs text-text-3 font-medium">
+                    {name.length}/40
+                  </span>
+                </div>
               </Field>
 
               <Field label="২. তোমার শ্রেণি">
@@ -269,13 +278,19 @@ function FormPage() {
               </Field>
 
               <Field label="৩. তোমার স্কুলের ইংরেজি নাম লিখো">
-                <input
-                  className={fieldClass}
-                  value={school}
-                  placeholder="Your school name in English"
-                  onChange={(e) => onlyEnglish(e.target.value) && setSchool(e.target.value)}
-                  required
-                />
+                <div className="relative">
+                  <input
+                    className={fieldClass}
+                    value={school}
+                    maxLength={60}
+                    placeholder="Your school name in English (Max 60 characters)"
+                    onChange={(e) => onlyEnglish(e.target.value) && setSchool(e.target.value)}
+                    required
+                  />
+                  <span className="absolute right-3 top-3.5 text-xs text-text-3 font-medium">
+                    {school.length}/60
+                  </span>
+                </div>
               </Field>
 
               <Field label="৪. 10 Minute School-এর সাথে তুমি কীভাবে প্রস্তুতি নিয়েছো?">

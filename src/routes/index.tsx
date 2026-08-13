@@ -124,7 +124,7 @@ function LoginButton({ className = "" }: { className?: string }) {
     <button
       type="button"
       onClick={handleLogin}
-      className={`bn inline-flex items-center gap-3 rounded-full bg-brand-red px-7 py-4 text-base font-semibold text-primary-foreground transition hover:bg-brand-red-deep ${className}`}
+      className={`bn inline-flex items-center gap-3 rounded-full bg-brand-red px-7 py-4 text-base font-semibold text-primary-foreground transition hover:bg-brand-red-deep cursor-pointer ${className}`}
     >
       <span className="inline-flex h-7 w-7 items-center justify-center rounded-full bg-background">
         <Logo variant="icon-color" height={18} />
@@ -164,8 +164,8 @@ function Home() {
             </span>
           </div>
 
-          <div className="mt-6 grid items-center gap-12 lg:grid-cols-2">
-            <div>
+          <div className="mt-6 grid items-center gap-16 lg:grid-cols-2 relative z-10">
+            <div className="relative z-20">
               <h1 className="bn text-4xl leading-[1.25] font-bold tracking-tight sm:text-5xl">
                 তোমার ফলাফল জমা দাও,
                 <br />
@@ -192,7 +192,7 @@ function Home() {
                   <LoginButton />
                   <Link
                     to="/gallery"
-                    className="inline-flex items-center gap-2 rounded-full bg-emerald px-6 py-4 text-base font-semibold text-primary-foreground shadow-sm transition hover:bg-emerald-deep"
+                    className="inline-flex items-center gap-2 rounded-full bg-[#1CAB55] px-6 py-4 text-base font-bold text-white shadow-sm transition-all duration-200 hover:bg-[#17994B] hover:shadow-md cursor-pointer"
                   >
                     <Images className="h-5 w-5" aria-hidden />
                     Certificate Gallery
@@ -202,17 +202,13 @@ function Home() {
               </div>
             </div>
 
-            <div className="relative mx-auto w-full max-w-sm">
-              <div className="rounded-xl border-[10px] border-gold bg-card p-2 shadow-sm">
-                <Certificate
-                  data={{
-                    studentName: "Jabir Misbah",
-                    schoolName: "10 Minute School",
-                    examName: "Half Yearly Examination",
-                    className: "Class 9",
-                    position: 1,
-                    totalMarks: "100",
-                  }}
+            <div className="relative mx-auto w-full max-w-md xl:max-w-lg lg:translate-x-16">
+              <div className="rounded-xl border-[10px] border-gold overflow-hidden shadow-sm">
+                <img
+                  src="/Certificates_demo.png"
+                  alt="10 Minute School Result Certificate"
+                  className="w-full h-auto rounded shadow-sm"
+                  style={{ aspectRatio: "1121 / 793" }}
                 />
               </div>
             </div>
@@ -306,11 +302,43 @@ function Home() {
             <Logo height={26} />
             <span className="bn text-sm text-text-3">শেখা হোক আনন্দে!</span>
           </div>
-          <div className="flex items-center gap-3 text-text-3 md:ml-auto">
-            <Facebook className="h-5 w-5" aria-label="Facebook" />
-            <Youtube className="h-5 w-5" aria-label="YouTube" />
-            <Instagram className="h-5 w-5" aria-label="Instagram" />
-            <Linkedin className="h-5 w-5" aria-label="LinkedIn" />
+          <div className="flex items-center gap-4 text-text-3 md:ml-auto">
+            <a
+              href="https://www.facebook.com/10minuteschool"
+              target="_blank"
+              rel="noopener noreferrer"
+              className="transition-colors hover:text-brand-red"
+              aria-label="10 Minute School Facebook Page"
+            >
+              <Facebook className="h-5 w-5" />
+            </a>
+            <a
+              href="https://www.youtube.com/@10msmain"
+              target="_blank"
+              rel="noopener noreferrer"
+              className="transition-colors hover:text-brand-red"
+              aria-label="10 Minute School YouTube Channel"
+            >
+              <Youtube className="h-5 w-5" />
+            </a>
+            <a
+              href="https://www.instagram.com/10ms_insta/?hl=en"
+              target="_blank"
+              rel="noopener noreferrer"
+              className="transition-colors hover:text-brand-red"
+              aria-label="10 Minute School Instagram Profile"
+            >
+              <Instagram className="h-5 w-5" />
+            </a>
+            <a
+              href="https://www.linkedin.com/company/10ms"
+              target="_blank"
+              rel="noopener noreferrer"
+              className="transition-colors hover:text-brand-red"
+              aria-label="10 Minute School LinkedIn Page"
+            >
+              <Linkedin className="h-5 w-5" />
+            </a>
           </div>
         </div>
       </footer>
