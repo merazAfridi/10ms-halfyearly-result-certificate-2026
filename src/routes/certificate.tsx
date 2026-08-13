@@ -50,19 +50,38 @@ export const Route = createFileRoute("/certificate")({
   },
   head: () => ({
     meta: [
-      { title: "Your Certificate | 10 Minute School" },
+      { title: "তোমার সার্টিফিকেট | 10 Minute School" },
       {
         name: "description",
         content:
-          "View and download your personalised 10 Minute School result achievement certificate as a PDF.",
+          "তোমার 10 Minute School কৃতি শিক্ষার্থী সার্টিফিকেট দেখো এবং ডাউনলোড করো।",
       },
-      { property: "og:title", content: "Your Certificate | 10 Minute School" },
+      /* ── Open Graph ── */
+      { property: "og:site_name", content: "10 Minute School" },
+      { property: "og:locale", content: "bn_BD" },
+      { property: "og:type", content: "website" },
+      { property: "og:url", content: "https://ks.10minuteschool.com/certificate" },
+      { property: "og:title", content: "তোমার সার্টিফিকেট | 10 Minute School" },
       {
         property: "og:description",
-        content: "Download your personalised 10 Minute School achievement certificate as a PDF.",
+        content:
+          "তোমার 10 Minute School কৃতি শিক্ষার্থী সার্টিফিকেট দেখো এবং ডাউনলোড করো।",
       },
-      { property: "og:type", content: "website" },
+      { property: "og:image", content: "https://ks.10minuteschool.com/og-image.jpg" },
+      { property: "og:image:alt", content: "10 Minute School কৃতি শিক্ষার্থী সার্টিফিকেট" },
+      { property: "og:image:width", content: "1200" },
+      { property: "og:image:height", content: "630" },
+      /* ── Twitter / X Card ── */
       { name: "twitter:card", content: "summary_large_image" },
+      { name: "twitter:site", content: "@10minuteschool" },
+      { name: "twitter:title", content: "তোমার সার্টিফিকেট | 10 Minute School" },
+      {
+        name: "twitter:description",
+        content:
+          "তোমার 10 Minute School কৃতি শিক্ষার্থী সার্টিফিকেট দেখো এবং ডাউনলোড করো।",
+      },
+      { name: "twitter:image", content: "https://ks.10minuteschool.com/og-image.jpg" },
+      { name: "twitter:image:alt", content: "10 Minute School কৃতি শিক্ষার্থী সার্টিফিকেট" },
     ],
   }),
   component: CertificatePage,

@@ -73,13 +73,43 @@ export const Route = createRootRouteWithContext<{ queryClient: QueryClient }>()(
     meta: [
       { charSet: "utf-8" },
       { name: "viewport", content: "width=device-width, initial-scale=1" },
-      { title: "Result Certificate | 10 Minute School" },
-      { name: "description", content: "10 Minute School Result Certificate Generator" },
+      { title: "কৃতি শিক্ষার্থী সার্টিফিকেট | 10 Minute School" },
+      {
+        name: "description",
+        content:
+          "তোমার হাফ ইয়ারলি বা প্রি-টেস্ট পরীক্ষার ফলাফল জমা দাও এবং 10 Minute School থেকে বিশেষ কৃতি শিক্ষার্থী সার্টিফিকেট সংগ্রহ করো।",
+      },
       { name: "author", content: "10 Minute School" },
-      { property: "og:title", content: "Result Certificate | 10 Minute School" },
-      { property: "og:description", content: "10 Minute School Result Certificate Generator" },
+      { name: "robots", content: "index, follow" },
+      { name: "theme-color", content: "#E5241B" },
+      /* ── Open Graph ── */
+      { property: "og:site_name", content: "10 Minute School" },
+      { property: "og:locale", content: "bn_BD" },
+      { property: "og:locale:alternate", content: "en_US" },
       { property: "og:type", content: "website" },
+      { property: "og:url", content: "https://ks.10minuteschool.com/" },
+      { property: "og:title", content: "কৃতি শিক্ষার্থী সার্টিফিকেট | 10 Minute School" },
+      {
+        property: "og:description",
+        content:
+          "তোমার হাফ ইয়ারলি বা প্রি-টেস্ট পরীক্ষার ফলাফল জমা দাও এবং 10 Minute School থেকে বিশেষ কৃতি শিক্ষার্থী সার্টিফিকেট সংগ্রহ করো।",
+      },
+      { property: "og:image", content: "https://ks.10minuteschool.com/og-image.jpg" },
+      { property: "og:image:alt", content: "10 Minute School কৃতি শিক্ষার্থী সার্টিফিকেট" },
+      { property: "og:image:width", content: "1200" },
+      { property: "og:image:height", content: "630" },
+      /* ── Twitter / X Card ── */
       { name: "twitter:card", content: "summary_large_image" },
+      { name: "twitter:site", content: "@10minuteschool" },
+      { name: "twitter:creator", content: "@10minuteschool" },
+      { name: "twitter:title", content: "কৃতি শিক্ষার্থী সার্টিফিকেট | 10 Minute School" },
+      {
+        name: "twitter:description",
+        content:
+          "তোমার পরীক্ষার ফলাফল জমা দাও এবং 10 Minute School থেকে বিশেষ কৃতি শিক্ষার্থী সার্টিফিকেট সংগ্রহ করো।",
+      },
+      { name: "twitter:image", content: "https://ks.10minuteschool.com/og-image.jpg" },
+      { name: "twitter:image:alt", content: "10 Minute School কৃতি শিক্ষার্থী সার্টিফিকেট" },
     ],
     links: [
       {

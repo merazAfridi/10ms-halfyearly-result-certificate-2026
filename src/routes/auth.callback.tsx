@@ -5,10 +5,14 @@ export const Route = createFileRoute("/auth/callback")({
   ssr: false,
   head: () => ({
     meta: [
-      { title: "Signing you in | 10 Minute School" },
-      { name: "description", content: "Completing your 10 Minute School sign-in." },
-      { property: "og:title", content: "Signing you in | 10 Minute School" },
-      { property: "og:description", content: "Completing your 10 Minute School sign-in." },
+      { title: "লগইন হচ্ছে | 10 Minute School" },
+      { name: "description", content: "তোমার 10 Minute School অ্যাকাউন্টে লগইন সম্পন্ন হচ্ছে।" },
+      { name: "robots", content: "noindex, nofollow" },
+      { property: "og:title", content: "লগইন হচ্ছে | 10 Minute School" },
+      { property: "og:description", content: "তোমার 10 Minute School অ্যাকাউন্টে লগইন সম্পন্ন হচ্ছে।" },
+      { property: "og:image", content: "https://ks.10minuteschool.com/og-image.jpg" },
+      { name: "twitter:card", content: "summary_large_image" },
+      { name: "twitter:image", content: "https://ks.10minuteschool.com/og-image.jpg" },
     ],
   }),
   component: AuthCallback,

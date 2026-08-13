@@ -13,18 +13,38 @@ import { Logo } from "@/components/Logo";
 export const Route = createFileRoute("/form")({
   head: () => ({
     meta: [
-      { title: "Submit Your Result | 10 Minute School" },
+      { title: "ফলাফল জমা দাও | 10 Minute School" },
       {
         name: "description",
         content:
-          "Share your Half Yearly or Pre-test result with 10 Minute School and instantly download a personalised achievement certificate.",
+          "তোমার হাফ ইয়ারলি বা প্রি-টেস্ট পরীক্ষার ফলাফল জমা দাও এবং 10 Minute School থেকে বিশেষ কৃতি শিক্ষার্থী সার্টিফিকেট সংগ্রহ করো।",
       },
-      { property: "og:title", content: "Submit Your Result | 10 Minute School" },
+      /* ── Open Graph ── */
+      { property: "og:site_name", content: "10 Minute School" },
+      { property: "og:locale", content: "bn_BD" },
+      { property: "og:type", content: "website" },
+      { property: "og:url", content: "https://ks.10minuteschool.com/form" },
+      { property: "og:title", content: "ফলাফল জমা দাও | 10 Minute School" },
       {
         property: "og:description",
         content:
-          "Share your exam result and download your personalised 10 Minute School achievement certificate.",
+          "তোমার পরীক্ষার ফলাফল জমা দাও এবং 10 Minute School থেকে বিশেষ কৃতি শিক্ষার্থী সার্টিফিকেট সংগ্রহ করো।",
       },
+      { property: "og:image", content: "https://ks.10minuteschool.com/og-image.jpg" },
+      { property: "og:image:alt", content: "10 Minute School কৃতি শিক্ষার্থী সার্টিফিকেট" },
+      { property: "og:image:width", content: "1200" },
+      { property: "og:image:height", content: "630" },
+      /* ── Twitter / X Card ── */
+      { name: "twitter:card", content: "summary_large_image" },
+      { name: "twitter:site", content: "@10minuteschool" },
+      { name: "twitter:title", content: "ফলাফল জমা দাও | 10 Minute School" },
+      {
+        name: "twitter:description",
+        content:
+          "তোমার পরীক্ষার ফলাফল জমা দাও এবং 10 Minute School থেকে বিশেষ কৃতি শিক্ষার্থী সার্টিফিকেট সংগ্রহ করো।",
+      },
+      { name: "twitter:image", content: "https://ks.10minuteschool.com/og-image.jpg" },
+      { name: "twitter:image:alt", content: "10 Minute School কৃতি শিক্ষার্থী সার্টিফিকেট" },
     ],
   }),
   component: FormPage,
