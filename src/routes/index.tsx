@@ -22,7 +22,8 @@ import {
 import { SiteHeader } from "@/components/SiteHeader";
 import { Certificate } from "@/components/Certificate";
 import { Logo } from "@/components/Logo";
-import { auth, useAuth } from "@/lib/auth";
+import { LoginButton } from "@tenminuteschool/auth-react";
+import { auth, CLIENT_ID } from "@/lib/auth";
 import { useEffect } from "react";
 import { useNavigate } from "@tanstack/react-router";
 import { Toaster, toast } from "sonner";
@@ -122,17 +123,12 @@ const BENEFITS = [
   },
 ];
 
-function LoginButton({ className = "" }: { className?: string }) {
+function CustomLoginButton() {
   const navigate = useNavigate();
-  const { user } = useAuth();
 
-  async function handleLogin() {
-    if (user) {
-      navigate({ to: "/dashboard" });
-      return;
-    }
+  async function handleSuccess(response: any) {
     try {
-      await auth.loginWithPopup();
+      await auth.handleLoginSuccess(response);
       navigate({ to: "/dashboard" });
     } catch (err) {
       toast.error(err instanceof Error ? err.message : "লগইন সম্পন্ন হয়নি।");
@@ -140,16 +136,10 @@ function LoginButton({ className = "" }: { className?: string }) {
   }
 
   return (
-    <button
-      type="button"
-      onClick={handleLogin}
-      className={`bn inline-flex items-center gap-3 rounded-full bg-brand-red px-7 py-4 text-base font-semibold text-primary-foreground transition hover:bg-brand-red-deep cursor-pointer ${className}`}
-    >
-      <span className="inline-flex h-7 w-7 items-center justify-center rounded-full bg-background">
-        <Logo variant="icon-color" height={18} />
-      </span>
-      Login with 10 Minute School
-    </button>
+    <LoginButton
+      clientId={CLIENT_ID}
+      onSuccess={handleSuccess}
+    />
   );
 }
 
@@ -164,14 +154,13 @@ function SecureNote() {
 
 function Home() {
   const navigate = useNavigate();
-  const { user, ready } = useAuth();
 
   // Redirect already logged-in users to /dashboard
   useEffect(() => {
-    if (ready && user) {
+    if (auth.isLoggedIn()) {
       navigate({ to: "/dashboard" });
     }
-  }, [ready, user, navigate]);
+  }, [navigate]);
 
   return (
     <main className="min-h-screen bg-background">
@@ -218,7 +207,7 @@ function Home() {
 
               <div className="mt-8">
                 <div className="flex flex-wrap items-center gap-4">
-                  <LoginButton />
+                  <CustomLoginButton />
                   <Link
                     to="/gallery"
                     className="inline-flex items-center gap-2 rounded-full bg-[#1CAB55] px-6 py-4 text-base font-bold text-white shadow-sm transition-all duration-200 hover:bg-[#17994B] hover:shadow-md cursor-pointer"
@@ -318,7 +307,7 @@ function Home() {
             </p>
           </div>
           <div className="text-center">
-            <LoginButton />
+            <CustomLoginButton />
             <SecureNote />
           </div>
         </div>
