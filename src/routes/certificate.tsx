@@ -197,8 +197,8 @@ function CertificatePage() {
       <SiteHeader />
 
       <section className="mx-auto max-w-xl px-6 py-10 relative">
-        {search.view ? (
-          <div className="mb-6">
+        <div className="mb-6">
+          {search.view ? (
             <Link
               to="/gallery"
               className="inline-flex items-center gap-1.5 text-sm font-semibold text-text-secondary transition hover:text-primary"
@@ -206,8 +206,16 @@ function CertificatePage() {
               <ArrowLeft className="h-4 w-4" />
               Back to Gallery
             </Link>
-          </div>
-        ) : null}
+          ) : (
+            <Link
+              to="/form"
+              className="inline-flex items-center gap-1.5 text-sm font-semibold text-text-secondary transition hover:text-primary"
+            >
+              <ArrowLeft className="h-4 w-4" />
+              Back to Form
+            </Link>
+          )}
+        </div>
         <h1 className="bn mb-6 text-center text-2xl font-semibold">
           {search.view ? "তোমার বন্ধুদের সার্টিফিকেট" : "তোমার সার্টিফিকেট"}
         </h1>
@@ -225,7 +233,7 @@ function CertificatePage() {
           />
         </div>
         {!search.view ? (
-          <div className="mt-6 flex justify-center">
+          <div className="mt-6 flex flex-col items-center gap-4 sm:flex-row sm:justify-between">
             <button
               onClick={downloadPdf}
               disabled={busy}
@@ -233,6 +241,13 @@ function CertificatePage() {
             >
               {busy ? "তৈরি হচ্ছে..." : "Download PDF"}
             </button>
+            <Link
+              to="/gallery"
+              className="inline-flex items-center gap-2 rounded-full border border-border bg-card px-6 py-4 text-sm font-semibold text-text-1 transition hover:border-primary hover:bg-primary-container hover:text-on-primary-container"
+            >
+              <Images className="h-4 w-4" aria-hidden />
+              Certificate Gallery
+            </Link>
           </div>
         ) : (
           <div className="mt-6 flex items-center justify-center gap-3">
